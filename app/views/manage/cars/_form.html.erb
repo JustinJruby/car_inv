@@ -1,0 +1,30 @@
+<%= form_with model: [:manage, car] do |f| %>
+  <% if car.errors.any? %>
+    <ul class="errors">
+      <% car.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <p>
+    <%= f.label :dealership_id, "Dealership" %>
+    <%= f.collection_select :dealership_id, Dealership.order(:name), :id, :name, prompt: "Choose one" %>
+  </p>
+  <p><%= f.label :make %> <%= f.text_field :make, required: true %></p>
+  <p><%= f.label :model %> <%= f.text_field :model, required: true %></p>
+  <p><%= f.label :year %> <%= f.number_field :year, required: true %></p>
+  <p><%= f.label :vin, "VIN" %> <%= f.text_field :vin, required: true, maxlength: 17 %></p>
+  <p><%= f.label :mileage %> <%= f.number_field :mileage, min: 0 %></p>
+  <p><%= f.label :asking_price, "Asking price ($)" %> <%= f.number_field :asking_price, step: "0.01", min: 0.01, required: true %></p>
+  <p><%= f.label :status %> <%= f.select :status, Car.statuses.keys.map { |s| [s.humanize, s] } %></p>
+
+  <fieldset>
+    <legend>Staff contact (private)</legend>
+    <p><%= f.label :contact_name %> <%= f.text_field :contact_name %></p>
+    <p><%= f.label :contact_phone %> <%= f.telephone_field :contact_phone %></p>
+    <p><%= f.label :contact_email %> <%= f.email_field :contact_email %></p>
+  </fieldset>
+
+  <p><%= f.submit %></p>
+<% end %>

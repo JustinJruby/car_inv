@@ -1,0 +1,3 @@
+<% content_for :title, "Car" %>
+<h1><%= @car.year %> <%= @car.make %> <%= @car.model %></h1>
+<p><%= link_to "Edit", edit_manage_car_path(@car) %></p>

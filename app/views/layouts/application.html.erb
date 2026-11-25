@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Car Inventory" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Car Inventory">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <nav>
+      <%= link_to "Inventory", cars_path %>
+      <% if authenticated? %>
+        | <%= link_to "Manage cars", manage_cars_path %>
+        | <%= button_to "Sign out", session_path, method: :delete, form: { style: "display:inline" } %>
+      <% else %>
+        | <%= link_to "Staff sign in", new_session_path %>
+      <% end %>
+    </nav>
+
+    <main>
+      <%= tag.p(flash[:notice], class: "notice") if flash[:notice] %>
+      <%= tag.p(flash[:alert], class: "alert", style: "color:red") if flash[:alert] %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

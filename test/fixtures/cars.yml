@@ -1,0 +1,29 @@
+toyota:
+  dealership: one
+  make: Toyota
+  model: RAV4
+  year: 2021
+  vin: 2T3P1RFV8MC123456
+  mileage: 38000
+  asking_price_cents: 2450000
+  status: 0
+
+honda_sold:
+  dealership: one
+  make: Honda
+  model: Civic
+  year: 2019
+  vin: 2HGFC2F69KH123457
+  mileage: 52000
+  asking_price_cents: 1620000
+  status: 2
+
+subaru_reserved:
+  dealership: two
+  make: Subaru
+  model: Outback
+  year: 2020
+  vin: 4S4BTANC5L3123458
+  mileage: 44500
+  asking_price_cents: 2180000
+  status: 1

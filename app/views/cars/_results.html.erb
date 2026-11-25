@@ -1,0 +1,15 @@
+<% if cars.empty? %>
+  <p>No cars match these filters.</p>
+<% else %>
+  <ul>
+    <% cars.each do |car| %>
+      <li>
+        <%= link_to "#{car.year} #{car.make} #{car.model}", car_path(car) %>
+        &mdash; <%= number_to_currency(car.asking_price) %>
+        <% if car.features.any? %>
+          (<%= car.features.map { |feature| feature.name }.join(", ") %>)
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

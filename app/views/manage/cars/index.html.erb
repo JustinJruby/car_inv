@@ -1,0 +1,25 @@
+<% content_for :title, "Manage cars" %>
+
+<h1>Cars</h1>
+<p><%= link_to "Add a car", new_manage_car_path %></p>
+
+<table>
+  <thead>
+    <tr><th>Car</th><th>VIN</th><th>Asking price</th><th>Status</th><th></th></tr>
+  </thead>
+  <tbody>
+    <% @cars.each do |car| %>
+      <tr>
+        <td><%= car.year %> <%= car.make %> <%= car.model %></td>
+        <td><%= car.vin %></td>
+        <td><%= number_to_currency(car.asking_price) %></td>
+        <td><%= car.status %></td>
+        <td>
+          <%= link_to "Edit", edit_manage_car_path(car) %>
+          <%= button_to "Remove", manage_car_path(car), method: :delete,
+                form: { data: { turbo_confirm: "Remove this car?" }, style: "display:inline" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

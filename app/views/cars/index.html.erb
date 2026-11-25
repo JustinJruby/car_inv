@@ -1,0 +1,21 @@
+<% content_for :title, "Available cars" %>
+
+<h1>Available cars</h1>
+
+<%= form_with url: cars_path, method: :get, data: { turbo_frame: "car_results" } do |f| %>
+  <p>
+    <%= f.label :make %> <%= f.text_field :make, value: params[:make] %>
+    <%= f.label :min_price, "Min price ($)" %> <%= f.number_field :min_price, value: params[:min_price], min: 0 %>
+    <%= f.label :max_price, "Max price ($)" %> <%= f.number_field :max_price, value: params[:max_price], min: 0 %>
+  </p>
+  <p>
+    <%= f.label :min_year, "Min year" %> <%= f.number_field :min_year, value: params[:min_year] %>
+    <%= f.label :max_year, "Max year" %> <%= f.number_field :max_year, value: params[:max_year] %>
+    <%= f.label :feature %> <%= f.text_field :feature, value: params[:feature] %>
+  </p>
+  <p><%= f.submit "Search" %></p>
+<% end %>
+
+<%= turbo_frame_tag "car_results" do %>
+  <%= render "results", cars: @cars %>
+<% end %>

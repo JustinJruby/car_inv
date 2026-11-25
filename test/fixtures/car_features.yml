@@ -1,0 +1,7 @@
+toyota_awd:
+  car: toyota
+  feature: awd
+
+subaru_leather:
+  car: subaru_reserved
+  feature: leather
