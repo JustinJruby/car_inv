@@ -2,7 +2,7 @@
 <%= turbo_stream_from @car %>
 
 <div class="mb-6 flex items-center justify-between gap-4">
-  <%= link_to "← Back to cars", manage_cars_path, class: "text-sm font-medium text-indigo-600 hover:text-indigo-800" %>
+  <%= link_to "Back to cars", manage_cars_path, class: "text-sm font-medium text-indigo-600 hover:text-indigo-800" %>
   <%= link_to "Edit", edit_manage_car_path(@car), class: "btn-primary" %>
 </div>
 

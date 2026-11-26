@@ -95,10 +95,10 @@ class CarTest < ActiveSupport::TestCase
 
   test "photos must be JPEG, PNG, or WebP" do
     car = cars(:toyota)
-    car.new_photos = [Rack::Test::UploadedFile.new(file_fixture("photo.png").to_s, "image/png")]
+    car.new_photos = [ Rack::Test::UploadedFile.new(file_fixture("photo.png").to_s, "image/png") ]
     assert car.valid?
 
-    car.new_photos = [Rack::Test::UploadedFile.new(file_fixture("notes.txt").to_s, "text/plain")]
+    car.new_photos = [ Rack::Test::UploadedFile.new(file_fixture("notes.txt").to_s, "text/plain") ]
     refute car.valid?
     assert_includes car.errors[:photos], "must be JPEG, PNG, or WebP"
   end

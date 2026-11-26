@@ -4,7 +4,7 @@
     <p class="mt-1 text-sm text-slate-500">Try widening the price or year range.</p>
   </div>
 <% else %>
-  <ul class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+  <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
     <%= render partial: "cars/car", collection: cars, as: :car %>
   </ul>
 <% end %>

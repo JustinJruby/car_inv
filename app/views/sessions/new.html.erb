@@ -7,12 +7,7 @@
   </div>
 
   <div class="card p-6 sm:p-8">
-    <% if flash[:alert] %>
-      <div role="alert" class="mb-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800 ring-1 ring-inset ring-red-600/20"><%= flash[:alert] %></div>
-    <% end %>
-    <% if flash[:notice] %>
-      <div role="status" class="mb-5 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800 ring-1 ring-inset ring-emerald-600/20"><%= flash[:notice] %></div>
-    <% end %>
+    <%= render "shared/flash" %>
 
     <%= form_with url: session_path, class: "space-y-5" do |form| %>
       <div>

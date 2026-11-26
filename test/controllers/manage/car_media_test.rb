@@ -20,8 +20,8 @@ class Manage::CarMediaTest < ActionDispatch::IntegrationTest
   end
 
   test "uploading more photos adds to the gallery instead of replacing it" do
-    patch manage_car_path(@car), params: { car: { new_photos: [photo] } }
-    patch manage_car_path(@car), params: { car: { new_photos: [photo] } }
+    patch manage_car_path(@car), params: { car: { new_photos: [ photo ] } }
+    patch manage_car_path(@car), params: { car: { new_photos: [ photo ] } }
     assert_equal 2, @car.reload.photos.count
   end
 
