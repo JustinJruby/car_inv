@@ -17,10 +17,10 @@
         <li class="card flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between" data-car-id="<%= id %>" data-price-dropped-at="<%= car&.price_dropped_at&.iso8601(3) %>">
           <% if car.nil? %>
             <span class="text-sm text-slate-500">This car is no longer listed.</span>
-          <% elsif car.available? %>
+          <% elsif car.available? || car.pre_sell_live? %>
             <div class="min-w-0">
               <%= link_to "#{car.year} #{car.make} #{car.model}", car_path(car), class: "font-semibold text-slate-900 hover:text-indigo-600" %>
-              <p class="text-sm text-slate-600"><%= number_to_currency(car.asking_price) %></p>
+              <p class="text-sm text-slate-600"><%= number_to_currency(car.customer_price) %><%= " · pre-sell" if car.pre_sell_live? %></p>
             </div>
             <span data-favorites-list-target="badge" hidden class="badge bg-amber-100 text-amber-800">Price dropped</span>
           <% else %>

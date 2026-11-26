@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_25_234624) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_26_200003) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -65,8 +65,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_234624) do
     t.string "model", null: false
     t.integer "year", null: false
     t.string "vin", limit: 17, null: false
-    t.integer "mileage", default: 0, null: false
-    t.integer "asking_price_cents", null: false
+    t.integer "mileage"
+    t.integer "asking_price_cents"
     t.integer "status", default: 0, null: false
     t.datetime "price_dropped_at"
     t.string "contact_name"
@@ -102,6 +102,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_234624) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "transit_events", force: :cascade do |t|
+    t.integer "transit_id", null: false
+    t.integer "user_id", null: false
+    t.string "kind", null: false
+    t.string "from_value"
+    t.string "to_value"
+    t.datetime "created_at", null: false
+    t.index ["transit_id"], name: "index_transit_events_on_transit_id"
+    t.index ["user_id"], name: "index_transit_events_on_user_id"
+  end
+
+  create_table "transits", force: :cascade do |t|
+    t.integer "car_id", null: false
+    t.integer "dealership_id", null: false
+    t.string "origin", limit: 120, null: false
+    t.date "expected_arrival_on", null: false
+    t.integer "state", default: 0, null: false
+    t.boolean "pre_sell", default: false, null: false
+    t.integer "pre_sell_price_cents"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["car_id"], name: "index_transits_on_car_id"
+    t.index ["car_id"], name: "index_transits_on_car_id_unless_closed", unique: true, where: "state = 0"
+    t.index ["dealership_id"], name: "index_transits_on_dealership_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email_address", null: false
     t.string "password_digest", null: false
@@ -116,4 +143,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_234624) do
   add_foreign_key "car_features", "features"
   add_foreign_key "cars", "dealerships"
   add_foreign_key "sessions", "users"
+  add_foreign_key "transit_events", "transits"
+  add_foreign_key "transit_events", "users"
+  add_foreign_key "transits", "cars"
+  add_foreign_key "transits", "dealerships"
 end

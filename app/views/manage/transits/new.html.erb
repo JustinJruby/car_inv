@@ -1,0 +1,12 @@
+<% content_for :title, "Record a car in transit" %>
+
+<div class="mx-auto max-w-2xl">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold tracking-tight text-slate-900">Record a car in transit</h1>
+    <p class="mt-1 text-sm text-slate-500">Mileage and asking price can be added when the car arrives.</p>
+  </div>
+
+  <div class="card p-6 sm:p-8">
+    <%= render "form", transit: @transit, car: @car %>
+  </div>
+</div>

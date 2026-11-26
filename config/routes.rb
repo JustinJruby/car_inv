@@ -22,5 +22,15 @@ Rails.application.routes.draw do
     resources :cars do
       resource :share, only: :create
     end
+
+    # Cars in transit (spec 003). Staff only; every action requires sign-in.
+    resources :transits, only: %i[index new create show] do
+      member do
+        post :arrive
+        post :cancel
+        patch :expected_arrival
+        patch :pre_sell
+      end
+    end
   end
 end
