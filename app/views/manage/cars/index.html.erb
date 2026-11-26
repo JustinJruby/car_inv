@@ -1,26 +1,44 @@
 <% content_for :title, "Manage cars" %>
 <%= turbo_stream_from "cars" %>
 
-<h1>Cars</h1>
-<p><%= link_to "Add a car", new_manage_car_path %></p>
+<div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight text-slate-900">Cars</h1>
+    <p class="mt-1 text-sm text-slate-500">Manage the inventory, prices and status.</p>
+  </div>
+  <%= link_to "Add a car", new_manage_car_path, class: "btn-primary" %>
+</div>
 
-<table>
-  <thead>
-    <tr><th>Car</th><th>VIN</th><th>Asking price</th><th>Status</th><th></th></tr>
-  </thead>
-  <tbody>
-    <% @cars.each do |car| %>
-      <tr>
-        <td><%= car.year %> <%= car.make %> <%= car.model %></td>
-        <td><%= car.vin %></td>
-        <td><%= number_to_currency(car.asking_price) %></td>
-        <td><%= car.status %></td>
-        <td>
-          <%= link_to "Edit", edit_manage_car_path(car) %>
-          <%= button_to "Remove", manage_car_path(car), method: :delete,
-                form: { data: { turbo_confirm: "Remove this car?" }, style: "display:inline" } %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<div class="card overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-slate-200 text-sm">
+      <thead class="bg-slate-50">
+        <tr class="text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <th scope="col" class="px-6 py-3">Car</th>
+          <th scope="col" class="px-6 py-3">VIN</th>
+          <th scope="col" class="px-6 py-3 text-right">Asking price</th>
+          <th scope="col" class="px-6 py-3">Status</th>
+          <th scope="col" class="px-6 py-3"><span class="sr-only">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 bg-white">
+        <% @cars.each do |car| %>
+          <tr class="hover:bg-slate-50">
+            <td class="whitespace-nowrap px-6 py-4 font-medium text-slate-900"><%= car.year %> <%= car.make %> <%= car.model %></td>
+            <td class="whitespace-nowrap px-6 py-4 font-mono text-xs text-slate-600"><%= car.vin %></td>
+            <td class="whitespace-nowrap px-6 py-4 text-right font-medium tabular-nums text-slate-900"><%= number_to_currency(car.asking_price) %></td>
+            <td class="whitespace-nowrap px-6 py-4"><%= car_status_badge(car) %></td>
+            <td class="whitespace-nowrap px-6 py-4">
+              <div class="flex items-center justify-end gap-2">
+                <%= link_to "Edit", edit_manage_car_path(car), class: "btn-secondary py-1.5!" %>
+                <%= button_to "Remove", manage_car_path(car), method: :delete,
+                      class: "btn-danger py-1.5!",
+                      form: { data: { turbo_confirm: "Remove this car?" }, class: "inline" } %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

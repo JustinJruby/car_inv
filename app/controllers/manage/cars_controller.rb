@@ -32,7 +32,7 @@ class Manage::CarsController < ApplicationController
 
     if @car.save
       # Photo changes do not touch the record on their own, so touch it for the stale report (FR-017).
-      @car.touch if car_params[:photos].present?
+      @car.touch if car_params[:new_photos].present?
       redirect_to manage_cars_path, notice: "Car updated."
     else
       render :edit, status: :unprocessable_entity
@@ -55,6 +55,6 @@ class Manage::CarsController < ApplicationController
     def car_params
       params.expect(car: [ :dealership_id, :make, :model, :year, :vin, :mileage, :asking_price, :status,
                           :contact_name, :contact_phone, :contact_email, :description, :feature_names,
-                          { photos: [] } ])
+                          { new_photos: [] } ])
     end
 end

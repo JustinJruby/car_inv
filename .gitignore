@@ -48,3 +48,6 @@ yarn-debug.log*
 
 # OS and editor files
 .DS_Store
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
