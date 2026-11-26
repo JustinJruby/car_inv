@@ -53,6 +53,11 @@
         <%= f.label :status, class: "label" %>
         <%= f.select :status, Car.statuses.keys.map { |s| [s.humanize, s] }, {}, class: "input" %>
       </div>
+      <div>
+        <%= f.label :sale_price, "Sale price ($)", class: "label" %>
+        <%= f.text_field :sale_price, inputmode: "decimal", placeholder: "Required when status is sold", class: "input" %>
+        <p class="mt-1 text-xs text-slate-500">Enter what the car sold for. Two decimal places at most.</p>
+      </div>
     </div>
   </section>
 
@@ -92,6 +97,18 @@
       <div>
         <%= f.label :contact_email, class: "label" %>
         <%= f.email_field :contact_email, class: "input" %>
+      </div>
+    </div>
+  </section>
+
+  <section class="card p-6">
+    <h2 class="section-title mb-1">Internal cost</h2>
+    <p class="mb-5 text-xs text-slate-500">Private: shown to staff only, never to customers.</p>
+    <div class="grid gap-5 sm:grid-cols-2">
+      <div>
+        <%= f.label :dealer_cost, "Dealer cost ($)", class: "label" %>
+        <%= f.text_field :dealer_cost, inputmode: "decimal", class: "input" %>
+        <p class="mt-1 text-xs text-slate-500">What the dealership paid for the car. Optional.</p>
       </div>
     </div>
   </section>

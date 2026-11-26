@@ -14,6 +14,60 @@
   <p class="mt-3 text-lg font-semibold text-slate-900"><%= number_to_currency(@car.asking_price) %></p>
 </div>
 
+<% if @car.sold? %>
+  <section class="card mt-6 p-6">
+    <h2 class="section-title mb-5">Sale</h2>
+    <dl class="grid gap-4 text-sm sm:grid-cols-2">
+      <div>
+        <dt class="text-slate-500">Sold on</dt>
+        <dd class="font-medium text-slate-900"><%= @car.sold_at ? @car.sold_at.strftime("%b %-d, %Y") : "Not recorded" %></dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">First listed</dt>
+        <dd class="font-medium text-slate-900"><%= @car.first_listed_price_cents ? number_to_currency(@car.first_listed_price_cents / 100.0) : "Not recorded" %></dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Asking price at sale</dt>
+        <dd class="font-medium text-slate-900"><%= @car.asking_price_at_sale_cents ? number_to_currency(@car.asking_price_at_sale_cents / 100.0) : "Not recorded" %></dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Sale price</dt>
+        <dd class="font-medium text-slate-900"><%= @car.sale_price_cents ? number_to_currency(@car.sale_price_cents / 100.0) : "Not recorded" %></dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class="text-slate-500">Difference</dt>
+        <dd class="font-medium text-slate-900">
+          <% if @car.sale_difference_cents %>
+            <%= number_to_currency(@car.sale_difference_cents.abs / 100.0) %> (<%= @car.sale_difference_percent %>%) <%= @car.sale_difference_label %>
+          <% else %>
+            <%= @car.sale_difference_label %>
+          <% end %>
+        </dd>
+      </div>
+    </dl>
+  </section>
+<% end %>
+
+<section class="card mt-6 p-6">
+  <h2 class="section-title mb-1">Internal cost</h2>
+  <p class="mb-5 text-xs text-slate-500">Private: shown to staff only, never to customers.</p>
+  <p class="text-sm font-medium text-slate-900"><%= @car.dealer_cost_cents ? number_to_currency(@car.dealer_cost_cents / 100.0) : "Not recorded" %></p>
+</section>
+
+<% if @car.car_price_events.any? %>
+  <section class="card mt-6 p-6">
+    <h2 class="section-title mb-5">Price history</h2>
+    <ol class="space-y-3 text-sm">
+      <% @car.car_price_events.includes(:user).order(:created_at).each do |event| %>
+        <li class="border-l-2 border-slate-200 pl-4">
+          <p class="font-medium text-slate-900"><%= event.kind.humanize %></p>
+          <p class="text-xs text-slate-500"><%= event.user.email_address %> · <%= event.created_at.strftime("%b %-d, %Y %H:%M") %></p>
+        </li>
+      <% end %>
+    </ol>
+  </section>
+<% end %>
+
 <div class="mt-6">
   <%= render "cars/gallery", car: @car %>
 </div>

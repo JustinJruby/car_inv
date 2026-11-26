@@ -1,0 +1,69 @@
+<% content_for :title, "Sales report" %>
+
+<div class="mb-8">
+  <h1 class="text-2xl font-bold tracking-tight text-slate-900">Sales report</h1>
+  <p class="mt-1 text-sm text-slate-500">Cars sold in a date range, against their listed price. Staff only.</p>
+</div>
+
+<%= form_with url: manage_sales_path, method: :get, class: "card mb-6 flex flex-wrap items-end gap-4 p-5" do |f| %>
+  <div>
+    <%= f.label :from, "From", class: "label" %>
+    <%= f.date_field :from, value: @from, class: "input" %>
+  </div>
+  <div>
+    <%= f.label :to, "To", class: "label" %>
+    <%= f.date_field :to, value: @to, class: "input" %>
+  </div>
+  <%= f.submit "Show sales", class: "btn-primary" %>
+<% end %>
+
+<% if @date_error %>
+  <div role="alert" class="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800 ring-1 ring-inset ring-red-600/20"><%= @date_error %></div>
+<% end %>
+
+<% if @cars.empty? && !@date_error %>
+  <div class="card px-6 py-16 text-center">
+    <p class="text-base font-medium text-slate-900">No sales in this period.</p>
+  </div>
+<% elsif @cars.any? %>
+  <div class="card overflow-x-auto">
+    <table class="min-w-full divide-y divide-slate-200 text-sm">
+      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <tr>
+          <th scope="col" class="px-6 py-3">Sold</th>
+          <th scope="col" class="px-6 py-3">Car</th>
+          <th scope="col" class="px-6 py-3">VIN</th>
+          <th scope="col" class="px-6 py-3 text-right">Listed at sale</th>
+          <th scope="col" class="px-6 py-3 text-right">Sale price</th>
+          <th scope="col" class="px-6 py-3">Difference</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        <% @cars.each do |car| %>
+          <tr>
+            <td class="whitespace-nowrap px-6 py-4 text-slate-700"><%= car.sold_at.strftime("%b %-d, %Y") %></td>
+            <td class="px-6 py-4 font-medium text-slate-900"><%= link_to "#{car.year} #{car.make} #{car.model}", manage_car_path(car), class: "text-indigo-600 hover:text-indigo-800" %></td>
+            <td class="whitespace-nowrap px-6 py-4 font-mono text-slate-700"><%= car.vin %></td>
+            <td class="whitespace-nowrap px-6 py-4 text-right text-slate-700"><%= car.asking_price_at_sale_cents ? number_to_currency(car.asking_price_at_sale_cents / 100.0) : "Not available" %></td>
+            <td class="whitespace-nowrap px-6 py-4 text-right text-slate-700"><%= number_to_currency(car.sale_price_cents / 100.0) %></td>
+            <td class="px-6 py-4 text-slate-700">
+              <% if car.sale_difference_cents %>
+                <%= number_to_currency(car.sale_difference_cents / 100.0) %> (<%= car.sale_difference_percent %>%) <%= car.sale_difference_label %>
+              <% else %>
+                <%= car.sale_difference_label %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot class="border-t border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900">
+        <tr>
+          <td colspan="3" class="px-6 py-3">Totals (<%= @totals[:count] %> sold)</td>
+          <td class="px-6 py-3 text-right"><%= number_to_currency(@totals[:listed] / 100.0) %></td>
+          <td class="px-6 py-3 text-right"><%= number_to_currency(@totals[:sold] / 100.0) %></td>
+          <td class="px-6 py-3"><%= number_to_currency(@totals[:difference] / 100.0) %></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+<% end %>

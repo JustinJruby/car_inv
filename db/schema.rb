@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_26_200003) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_26_300003) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -59,6 +59,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_26_200003) do
     t.index ["feature_id"], name: "index_car_features_on_feature_id"
   end
 
+  create_table "car_price_events", force: :cascade do |t|
+    t.integer "car_id", null: false
+    t.integer "user_id", null: false
+    t.string "kind", null: false
+    t.integer "from_cents"
+    t.integer "to_cents"
+    t.datetime "created_at", null: false
+    t.index ["car_id"], name: "index_car_price_events_on_car_id"
+    t.index ["user_id"], name: "index_car_price_events_on_user_id"
+  end
+
   create_table "cars", force: :cascade do |t|
     t.integer "dealership_id", null: false
     t.string "make", null: false
@@ -75,6 +86,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_26_200003) do
     t.integer "lock_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sale_price_cents"
+    t.datetime "sold_at"
+    t.integer "asking_price_at_sale_cents"
+    t.integer "first_listed_price_cents"
+    t.integer "dealer_cost_cents"
     t.index ["dealership_id"], name: "index_cars_on_dealership_id"
     t.index ["vin"], name: "index_cars_on_vin_unless_sold", unique: true, where: "status != 2"
   end
@@ -141,6 +157,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_26_200003) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "car_features", "cars"
   add_foreign_key "car_features", "features"
+  add_foreign_key "car_price_events", "cars"
+  add_foreign_key "car_price_events", "users"
   add_foreign_key "cars", "dealerships"
   add_foreign_key "sessions", "users"
   add_foreign_key "transit_events", "transits"

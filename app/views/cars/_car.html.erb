@@ -6,7 +6,8 @@
       <div class="min-w-0">
         <p class="text-sm font-medium text-slate-500"><%= car.year %></p>
         <h2 class="truncate text-lg font-semibold text-slate-900">
-          <%= link_to "#{car.year} #{car.make} #{car.model}", car_path(car), class: "after:absolute after:inset-0 hover:text-indigo-600" %>
+          <%# Break out of the results frame: the car page is a full page, not a frame (otherwise Turbo shows "Content missing"). %>
+          <%= link_to "#{car.year} #{car.make} #{car.model}", car_path(car), data: { turbo_frame: "_top" }, class: "after:absolute after:inset-0 hover:text-indigo-600" %>
         </h2>
       </div>
       <% if car.pre_sell_live? %>
