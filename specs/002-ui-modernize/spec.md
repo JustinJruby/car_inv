@@ -16,7 +16,7 @@ Every page is unstyled HTML: plain links separated by pipes, default form contro
 A customer sees a clean header, a filter panel with styled inputs, and car cards in a responsive grid that they can scan quickly. The car detail page shows the photo gallery, key facts, and a clear save button.
 
 **Acceptance Scenarios**:
-1. **Given** the inventory page, **When** it loads, **Then** cars appear as cards in a grid (3+ columns on desktop, 1 column on phones), each showing year, make, model, price, and features.
+1. **Given** the inventory page, **When** it loads, **Then** cars appear as cards in a grid (3+ columns at 1024px and wider, 1 column on phones), each showing year, make, model, price, and features.
 2. **Given** no cars match, **When** the customer searches, **Then** a styled empty-state message says "No cars match these filters."
 3. **Given** the car detail page, **When** it loads, **Then** the title, price, mileage, features, and description are visually grouped, and "Save to favorites" is a visible primary button.
 
@@ -50,7 +50,7 @@ Every page shares one header with navigation, the sign-in, password-reset, saved
 
 ## Success Criteria *(mandatory)*
 
-- **SC-001**: `bin/rails test` passes with the same 65 tests as before the change (no test edited to make it pass, except where a spec-driven text change is noted in the plan).
+- **SC-001**: `bin/rails test` passes with the same 68 tests (228 assertions) as before the change (no test edited to make it pass, except where a spec-driven text change is noted in the plan).
 - **SC-002**: `bin/rails test:system` passes with the same 6 tests.
 - **SC-003**: Screenshots at 375px and 1280px show every page rendering with Tailwind styles and no unstyled default elements.
 - **SC-004**: Add a test asserting that the layout includes the compiled stylesheet and the header navigation links.
