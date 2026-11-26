@@ -28,6 +28,7 @@
 
         <nav class="flex flex-wrap items-center gap-1 text-sm font-medium">
           <%= link_to "Inventory", cars_path, class: "inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900" %>
+          <%= link_to "Favorites", favorites_path, class: "inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900" %>
           <% if authenticated? %>
             <%= link_to "Manage cars", manage_cars_path, class: "inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900" %>
             <%= button_to "Sign out", session_path, method: :delete, class: "btn-secondary ml-2 py-2!", form: { class: "inline" } %>
