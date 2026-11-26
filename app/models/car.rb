@@ -4,9 +4,9 @@ class Car < ApplicationRecord
 
   belongs_to :dealership
 
-  # Status: available (0), reserved (1), sold (2). Enum also creates the
-  # Car.available, Car.reserved, and Car.sold scopes.
-  enum :status, { available: 0, reserved: 1, sold: 2 }
+  # Status: available (0), reserved (1), sold (2), in_transit (3). Enum also creates the
+  # Car.available, Car.reserved, Car.sold, and Car.in_transit scopes.
+  enum :status, { available: 0, reserved: 1, sold: 2, in_transit: 3 }
 
   # Signed share token that expires after 7 days (FR-018). Nothing is stored in the database.
   generates_token_for :share, expires_in: 7.days
@@ -17,6 +17,8 @@ class Car < ApplicationRecord
   has_many_attached :photos
   has_many :car_features, dependent: :destroy
   has_many :features, through: :car_features
+  has_many :transits, dependent: :restrict_with_error
+  has_one :open_transit, -> { open }, class_name: "Transit", inverse_of: :car
 
   # Live updates (FR-010): any change refreshes the public list, the staff list,
   # and open car pages. Subscribers are declared with turbo_stream_from in the views.
@@ -35,8 +37,11 @@ class Car < ApplicationRecord
     conditions: -> { where.not(status: :sold) },
     message: "is already used by another active listing"
   }, unless: :sold?
-  validates :mileage, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :asking_price_cents, numericality: { only_integer: true, greater_than: 0 }
+  # D1 (option A): a car in transit needs only its intake fields. Mileage is required once the car
+  # is pre-sold. Asking price is set on arrival from the pre-sell price (research R3), so it is
+  # required only once the car is not in transit.
+  validates :mileage, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, unless: :intake_only?
+  validates :asking_price_cents, numericality: { only_integer: true, greater_than: 0 }, unless: :in_transit?
   validate :new_photos_must_be_images
   after_save :attach_new_photos
 
@@ -69,7 +74,15 @@ class Car < ApplicationRecord
     @pending_feature_names = value.to_s.split(",").map { |name| name.strip.downcase }.reject(&:blank?).uniq
   end
 
-  scope :stale, -> { where("cars.updated_at < ?", 60.days.ago) }
+  # What customers can see: available cars, plus cars in transit that are live for pre-sell (spec 003, FR-011).
+  scope :listed_for_customers, -> {
+    where(status: :available).or(
+      where(status: :in_transit, id: Transit.open.where(pre_sell: true).where.not(pre_sell_price_cents: nil).select(:car_id))
+    )
+  }
+
+  # Stale-listing report (FR-017). Cars in transit are not listings yet, so they are excluded (research R10).
+  scope :stale, -> { where("cars.updated_at < ?", 60.days.ago).where.not(status: :in_transit) }
   scope :by_make, ->(make) { where("LOWER(cars.make) = ?", make.to_s.downcase) if make.present? }
   scope :priced_between, ->(min, max) {
     scoped = all
@@ -86,6 +99,29 @@ class Car < ApplicationRecord
   scope :with_feature, ->(name) {
     where(id: CarFeature.joins(:feature).where(features: { name: name.to_s.strip.downcase }).select(:car_id)) if name.present?
   }
+
+  # True when a customer should see this car as a pre-sell (open transit, pre-sell flag, price set).
+  def pre_sell_live?
+    in_transit? && open_transit.present? && open_transit.public_pre_sell?
+  end
+
+  # The price customers see, in dollars: the pre-sell price for a live pre-sell, otherwise the asking price.
+  def customer_price
+    pre_sell_live? ? open_transit.pre_sell_price_cents.fdiv(100) : asking_price
+  end
+
+  # An in-transit car with no open pre-sell only needs its intake fields (D1).
+  def intake_only?
+    in_transit? && !open_transit&.public_pre_sell?
+  end
+
+  # Called when the car's transit arrives. A sold car stays sold (spec edge case).
+  # Otherwise the car becomes available, and the pre-sell price becomes its asking price.
+  def arrive_from_transit!(transit)
+    self.status = :available unless sold?
+    self.asking_price_cents = transit.pre_sell_price_cents if transit.pre_sell_price_cents.present?
+    save!
+  end
 
   private
     def new_photos_must_be_images

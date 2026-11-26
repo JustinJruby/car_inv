@@ -1,0 +1,91 @@
+<% content_for :title, "Transit: #{@transit.car.year} #{@transit.car.make} #{@transit.car.model}" %>
+<% car = @transit.car %>
+
+<div class="mb-6 flex items-center justify-between gap-4">
+  <%= link_to "← Back to cars in transit", manage_transits_path, class: "text-sm font-medium text-indigo-600 hover:text-indigo-800" %>
+  <span class="badge <%= @transit.open? ? 'bg-sky-50 text-sky-700' : 'bg-slate-100 text-slate-600' %> ring-1 ring-inset ring-slate-300">
+    <%= @transit.state.humanize %>
+  </span>
+</div>
+
+<% if flash[:alert] %>
+  <div role="alert" class="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800 ring-1 ring-inset ring-red-600/20"><%= flash[:alert] %></div>
+<% end %>
+
+<div class="grid gap-8 lg:grid-cols-3">
+  <div class="space-y-8 lg:col-span-2">
+    <section class="card p-6 sm:p-8">
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900"><%= car.year %> <%= car.make %> <%= car.model %></h1>
+      <dl class="mt-6 grid gap-4 sm:grid-cols-2">
+        <div><dt class="section-title">VIN</dt><dd class="mt-1 font-mono text-slate-900"><%= car.vin %></dd></div>
+        <div><dt class="section-title">Coming from</dt><dd class="mt-1 text-slate-900"><%= @transit.origin %></dd></div>
+        <div><dt class="section-title">Expected arrival</dt><dd class="mt-1 text-slate-900"><%= @transit.expected_arrival_on.strftime("%b %-d, %Y") %><% if @transit.overdue? %> <span data-overdue="true" class="badge ml-2 bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20">Overdue</span><% end %></dd></div>
+        <div><dt class="section-title">Pre-sell</dt><dd class="mt-1 text-slate-900"><%= @transit.pre_sell? ? "#{number_to_currency(@transit.pre_sell_price_cents / 100.0)} (live: #{@transit.public_pre_sell? ? 'yes' : 'no'})" : "Not offered" %></dd></div>
+      </dl>
+    </section>
+
+    <% if @transit.open? %>
+      <section class="card p-6 sm:p-8">
+        <h2 class="section-title mb-5">Arrive</h2>
+        <p class="mb-5 text-sm text-slate-500">Marking the car arrived adds it to dealership inventory. Mileage and asking price are needed before it is listed.</p>
+        <%= form_with url: arrive_manage_transit_path(@transit), method: :post, class: "grid gap-5 sm:grid-cols-3" do |f| %>
+          <%= hidden_field_tag "transit[lock_version]", @transit.lock_version %>
+          <div>
+            <%= f.label "car[mileage]", "Mileage", class: "label" %>
+            <%= f.number_field "car[mileage]", value: car.mileage, min: 0, class: "input" %>
+          </div>
+          <div>
+            <%= f.label "car[asking_price]", "Asking price ($)", class: "label" %>
+            <%= f.text_field "car[asking_price]", value: car.asking_price_cents && (car.asking_price_cents / 100.0), class: "input", placeholder: "e.g. 20500" %>
+          </div>
+          <div class="flex items-end">
+            <%= f.submit "Mark arrived", class: "btn-primary w-full" %>
+          </div>
+        <% end %>
+      </section>
+
+      <section class="card p-6 sm:p-8">
+        <h2 class="section-title mb-5">Expected arrival</h2>
+        <%= form_with url: expected_arrival_manage_transit_path(@transit), method: :patch, scope: :transit, class: "flex flex-wrap items-end gap-4" do |f| %>
+          <%= hidden_field_tag "transit[lock_version]", @transit.lock_version %>
+          <div class="min-w-48">
+            <%= f.label :expected_arrival_on, "New date", class: "label" %>
+            <%= f.date_field :expected_arrival_on, value: @transit.expected_arrival_on, class: "input" %>
+          </div>
+          <%= f.submit "Update date", class: "btn-secondary" %>
+        <% end %>
+      </section>
+
+      <section class="card p-6 sm:p-8">
+        <h2 class="section-title mb-5">Pre-sell</h2>
+        <p class="mb-5 text-sm text-slate-500">A pre-sell shows the car to customers with this price and its expected arrival date. Origin stays private.</p>
+        <%= form_with url: pre_sell_manage_transit_path(@transit), method: :patch, scope: :transit, class: "flex flex-wrap items-end gap-4" do |f| %>
+          <div class="min-w-48">
+            <%= f.label :pre_sell_price, "Pre-sell price ($)", class: "label" %>
+            <%= f.text_field :pre_sell_price, value: (@transit.pre_sell_price_cents && (@transit.pre_sell_price_cents / 100.0)), class: "input", placeholder: "e.g. 21000" %>
+          </div>
+          <%= f.submit @transit.pre_sell? ? "Update price" : "Offer pre-sell", class: "btn-primary" %>
+        <% end %>
+      </section>
+
+      <div class="flex justify-end">
+        <%= button_to "Cancel transit", cancel_manage_transit_path(@transit), method: :post, class: "btn-danger", form: { data: { turbo_confirm: "Cancel this transit? The car itself is not changed." } } %>
+      </div>
+    <% end %>
+  </div>
+
+  <aside class="card h-fit p-6">
+    <h2 class="section-title mb-5">History</h2>
+    <ol class="space-y-4 text-sm">
+      <% @transit.transit_events.includes(:user).order(:created_at).each do |event| %>
+        <li class="border-l-2 border-slate-200 pl-4">
+          <p class="font-medium text-slate-900"><%= event.kind.humanize %></p>
+          <% if event.from_value.present? || event.to_value.present? %>
+            <p class="text-slate-600"><%= [event.from_value, event.to_value].compact.join(" → ") %></p>
+          <% end %>
+          <p class="mt-1 text-xs text-slate-500"><%= event.user.email_address %> · <%= event.created_at.strftime("%b %-d, %Y %H:%M") %></p>
+        </li>
+      <% end %>
+    </ol>
+  </aside>
+</div>

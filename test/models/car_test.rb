@@ -102,4 +102,30 @@ class CarTest < ActiveSupport::TestCase
     refute car.valid?
     assert_includes car.errors[:photos], "must be JPEG, PNG, or WebP"
   end
+
+  test "a car in transit saves with only its intake fields" do
+    car = build_car(status: :in_transit, mileage: nil, asking_price_cents: nil)
+    assert car.valid?, car.errors.full_messages.to_sentence
+  end
+
+  test "a car in transit with an open pre-sell still needs mileage" do
+    car = build_car(status: :in_transit)
+    car.save!
+    Transit.create!(car: car, dealership: @dealership, origin: "Auction, Phoenix",
+      expected_arrival_on: Date.current + 7, pre_sell: true, pre_sell_price_cents: 2_100_000)
+    car.reload
+    car.mileage = nil
+    refute car.valid?
+    assert car.errors[:mileage].any?
+  end
+
+  test "stale report excludes cars in transit" do
+    in_transit = cars(:toyota)
+    in_transit.update_columns(status: Car.statuses[:in_transit], updated_at: 61.days.ago)
+    listed = cars(:subaru_reserved)
+    listed.update_columns(status: Car.statuses[:available], updated_at: 61.days.ago)
+
+    assert_not_includes Car.stale, in_transit
+    assert_includes Car.stale, listed
+  end
 end

@@ -6,15 +6,16 @@ class CarsController < ApplicationController
   end
 
   def show
-    @car = Car.available.find(params[:id])
+    @car = Car.listed_for_customers.find(params[:id])
   end
 
   private
-    # Customers only ever see available cars (FR-013). Filters narrow that set.
+    # Customers only see available cars (FR-013) and cars in transit that are live for pre-sell (spec 003).
+    # Filters narrow that set. A price filter uses the asking price, so pre-sell cars drop out of it.
     def filtered_cars
       filters = params.permit(:make, :min_price, :max_price, :min_year, :max_year, :feature)
 
-      Car.available
+      Car.listed_for_customers
         .includes(:features)
         .by_make(filters[:make])
         .priced_between(filters[:min_price], filters[:max_price])
