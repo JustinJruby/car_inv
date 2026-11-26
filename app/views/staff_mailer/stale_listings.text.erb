@@ -1,0 +1,9 @@
+Hello,
+
+These listings have not been edited in the last 60 days:
+
+<% @cars.each do |car| -%>
+- <%= car.year %> <%= car.make %> <%= car.model %> (VIN <%= car.vin %>), last edited <%= car.updated_at.to_date %>, status <%= car.status %>
+<% end -%>
+
+Open the inventory to update or remove them.

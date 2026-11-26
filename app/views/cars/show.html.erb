@@ -1,9 +1,17 @@
 <% content_for :title, "#{@car.year} #{@car.make} #{@car.model}" %>
+<%= turbo_stream_from @car %>
 
 <h1><%= @car.year %> <%= @car.make %> <%= @car.model %></h1>
+<%= render "gallery", car: @car %>
 <p>Mileage: <%= number_with_delimiter(@car.mileage) %></p>
 <p>Asking price: <%= number_to_currency(@car.asking_price) %></p>
 <% if @car.features.any? %>
   <p>Features: <%= @car.features.map { |feature| feature.name }.join(", ") %></p>
 <% end %>
+<% if @car.description.present? %>
+  <div class="description"><%= @car.description %></div>
+<% end %>
+<div data-controller="favorites" data-favorites-car-id-value="<%= @car.id %>">
+  <button type="button" data-favorites-target="button" data-action="favorites#toggle">Save to favorites</button>
+</div>
 <p><%= link_to "Back to search", cars_path %></p>

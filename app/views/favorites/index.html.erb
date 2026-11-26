@@ -1,0 +1,25 @@
+<% content_for :title, "Saved cars" %>
+
+<h1>Saved cars</h1>
+
+<div data-controller="favorites-list">
+  <% if @favorites.empty? %>
+    <p>You have no saved cars. Browse the <%= link_to "inventory", cars_path %> and save a car to find it here.</p>
+  <% else %>
+    <ul>
+      <% @favorites.each do |id, car| %>
+        <li data-car-id="<%= id %>" data-price-dropped-at="<%= car&.price_dropped_at&.iso8601 %>">
+          <% if car.nil? %>
+            This car is no longer listed.
+          <% elsif car.available? %>
+            <%= link_to "#{car.year} #{car.make} #{car.model}", car_path(car) %>
+            &mdash; <%= number_to_currency(car.asking_price) %>
+            <span data-favorites-list-target="badge" hidden>Price dropped</span>
+          <% else %>
+            <%= car.year %> <%= car.make %> <%= car.model %> &mdash; no longer available
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>

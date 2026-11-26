@@ -46,3 +46,23 @@ class Manage::CarsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
   end
 end
+
+class Manage::CarsStaleSaveTest < ActionDispatch::IntegrationTest
+  setup do
+    sign_in_as(users(:one))
+  end
+
+  test "save with a stale lock_version is rejected and changes nothing" do
+    car = cars(:toyota)
+    stale_version = car.lock_version
+
+    # Another staff member saves first, which bumps the version.
+    Car.find(car.id).update!(mileage: 39_000)
+
+    patch manage_car_path(car), params: { car: { asking_price: "1.00", lock_version: stale_version } }
+
+    assert_response :unprocessable_entity
+    assert_equal 2_450_000, car.reload.asking_price_cents
+    assert_includes response.body, "changed by someone else"
+  end
+end

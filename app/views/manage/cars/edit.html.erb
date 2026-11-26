@@ -1,4 +1,5 @@
 <% content_for :title, "Edit car" %>
 <h1>Edit <%= @car.year %> <%= @car.make %> <%= @car.model %></h1>
 <%= render "form", car: @car %>
+<p><%= button_to "Create 7-day share link", manage_car_share_path(@car) %></p>
 <p><%= link_to "Back to cars", manage_cars_path %></p>

@@ -16,7 +16,11 @@ Rails.application.routes.draw do
   resources :cars, only: %i[index show]
   get "favorites", to: "favorites#index"
 
+  get "share/:token", to: "shares#show", as: :share
+
   namespace :manage do
-    resources :cars
+    resources :cars do
+      resource :share, only: :create
+    end
   end
 end

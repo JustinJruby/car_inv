@@ -1,6 +1,9 @@
 require "test_helper"
-
+require "turbo/broadcastable/test_helper"
 class CarTest < ActiveSupport::TestCase
+  include ActionMailer::TestHelper
+  include Turbo::Broadcastable::TestHelper
+
   setup { @dealership = dealerships(:one) }
 
   def build_car(**attrs)
@@ -50,9 +53,53 @@ class CarTest < ActiveSupport::TestCase
     assert build_car(vin: cars(:honda_sold).vin).valid?
   end
 
+  test "stale scope excludes a car changed 59 days ago" do
+    cars(:toyota).update_columns(updated_at: 59.days.ago)
+    refute_includes Car.stale, cars(:toyota)
+  end
+
   test "stale scope finds cars unchanged for 60 days" do
     cars(:toyota).update_columns(updated_at: 61.days.ago)
     assert_includes Car.stale, cars(:toyota)
     refute_includes Car.stale, cars(:subaru_reserved)
+  end
+
+  test "a change broadcasts a refresh to the public list and the car page" do
+    assert_turbo_stream_broadcasts("cars") do
+      cars(:toyota).update!(mileage: 40_000)
+    end
+    assert_turbo_stream_broadcasts(cars(:toyota)) do
+      cars(:toyota).update!(mileage: 41_000)
+    end
+  end
+
+  test "a lower asking price sets price_dropped_at" do
+    car = cars(:toyota)
+    assert_nil car.price_dropped_at
+
+    car.update!(asking_price: "21000.00")
+    assert_not_nil car.reload.price_dropped_at
+  end
+
+  test "a higher asking price does not set price_dropped_at" do
+    car = cars(:toyota)
+    car.update!(asking_price: "30000.00")
+    assert_nil car.reload.price_dropped_at
+  end
+
+  test "a price reduction sends no email" do
+    assert_no_enqueued_emails do
+      cars(:toyota).update!(asking_price: "20000.00")
+    end
+  end
+
+  test "photos must be JPEG, PNG, or WebP" do
+    car = cars(:toyota)
+    car.photos.attach(io: File.open(file_fixture("photo.png")), filename: "photo.png", content_type: "image/png")
+    assert car.valid?
+
+    car.photos.attach(io: File.open(file_fixture("notes.txt")), filename: "notes.txt", content_type: "text/plain")
+    refute car.valid?
+    assert_includes car.errors[:photos], "must be JPEG, PNG, or WebP"
   end
 end

@@ -1,3 +1,7 @@
 <% content_for :title, "Car" %>
+<%= turbo_stream_from @car %>
+
 <h1><%= @car.year %> <%= @car.make %> <%= @car.model %></h1>
-<p><%= link_to "Edit", edit_manage_car_path(@car) %></p>
+<p>Status: <%= @car.status.humanize %> &middot; Asking price: <%= number_to_currency(@car.asking_price) %></p>
+<%= render "cars/gallery", car: @car %>
+<p><%= link_to "Edit", edit_manage_car_path(@car) %> &middot; <%= link_to "Back to cars", manage_cars_path %></p>

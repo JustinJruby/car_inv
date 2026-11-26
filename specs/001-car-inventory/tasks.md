@@ -109,15 +109,15 @@ Single Rails application at the repository root, following the default Rails lay
 
 ### Tests for User Story 3
 
-- [ ] T034 [P] [US3] Write a request test in `test/controllers/manage/cars_controller_test.rb` that a save with a stale `lock_version` is rejected with a reload message (FR-021; data-model.md: Car.lock_version)
+- [x] T034 [P] [US3] Write a request test in `test/controllers/manage/cars_controller_test.rb` that a save with a stale `lock_version` is rejected with a reload message (FR-021; data-model.md: Car.lock_version)
 - [ ] T035 [P] [US3] Write a system test in `test/system/live_updates_test.rb` with two browser sessions: a status change on one appears on the other without reload (FR-010)
 
 ### Implementation for User Story 3
 
-- [ ] T036 [US3] Add `broadcasts_refreshes` to `app/models/car.rb` so changes to a car broadcast a Turbo refresh to subscribers (FR-010)
-- [ ] T037 [US3] Add `turbo_stream_from @car` to `app/views/manage/cars/show.html.erb`, and `turbo_stream_from "manage_cars"` to `app/views/manage/cars/index.html.erb`, so open staff pages subscribe to changes
-- [ ] T038 [US3] Rescue `ActiveRecord::StaleObjectError` in `app/controllers/manage/cars_controller.rb` `update` and render a "This car was changed. Reload and try again." message (data-model.md: Car.lock_version)
-- [ ] T039 [US3] Add `broadcasts_refreshes` and `turbo_stream_from` for the public car page in `app/views/cars/show.html.erb`, so customers see status changes within seconds (SC-003)
+- [x] T036 [US3] Add `broadcasts_refreshes` to `app/models/car.rb` so changes to a car broadcast a Turbo refresh to subscribers (FR-010)
+- [x] T037 [US3] Add `turbo_stream_from @car` to `app/views/manage/cars/show.html.erb`, and `turbo_stream_from "manage_cars"` to `app/views/manage/cars/index.html.erb`, so open staff pages subscribe to changes
+- [x] T038 [US3] Rescue `ActiveRecord::StaleObjectError` in `app/controllers/manage/cars_controller.rb` `update` and render a "This car was changed. Reload and try again." message (data-model.md: Car.lock_version)
+- [x] T039 [US3] Add `broadcasts_refreshes` and `turbo_stream_from` for the public car page in `app/views/cars/show.html.erb`, so customers see status changes within seconds (SC-003)
 
 **Checkpoint**: Live updates work for staff and customers.
 
@@ -131,18 +131,18 @@ Single Rails application at the repository root, following the default Rails lay
 
 ### Tests for User Story 4
 
-- [ ] T040 [P] [US4] Write model tests in `test/models/car_test.rb` for photo content types (JPEG, PNG, WebP only) and photo size limits (data-model.md: Car.photos)
-- [ ] T041 [P] [US4] Write a request test in `test/controllers/manage/cars_controller_test.rb` that a failed photo upload keeps previously attached photos (edge case in spec)
+- [x] T040 [P] [US4] Write model tests in `test/models/car_test.rb` for photo content types (JPEG, PNG, WebP only) and photo size limits (data-model.md: Car.photos)
+- [x] T041 [P] [US4] Write a request test in `test/controllers/manage/cars_controller_test.rb` that a failed photo upload keeps previously attached photos (edge case in spec)
 - [ ] T042 [P] [US4] Write a system test in `test/system/car_media_test.rb` that a formatted description and a feature tag entered by staff appear on the customer page
 
 ### Implementation for User Story 4
 
-- [ ] T043 [US4] Add photo validation to `app/models/car.rb`: allowed content types JPEG, PNG, and WebP, and a per-file size cap (data-model.md: Car.photos)
-- [ ] T044 [US4] Permit `photos: []`, `description`, and `feature_names` in `app/controllers/manage/cars_controller.rb`, and wrap attach in a transaction so a failed upload keeps existing photos
-- [ ] T045 [US4] Add `feature_names=` to `app/models/car.rb` that finds or creates `Feature` records by normalized name (data-model.md: Feature.name)
-- [ ] T046 [US4] Add a rich-text description field and photo upload field to `app/views/manage/cars/_form.html.erb`, and a comma-separated feature tags field
-- [ ] T047 [US4] Create `app/views/cars/_gallery.html.erb` that shows photo variants in attachment order (quickstart.md Scenario 3, step 1)
-- [ ] T048 [US4] Render the gallery and the rich-text description in `app/views/cars/show.html.erb`
+- [x] T043 [US4] Add photo validation to `app/models/car.rb`: allowed content types JPEG, PNG, and WebP, and a per-file size cap (data-model.md: Car.photos)
+- [x] T044 [US4] Permit `photos: []`, `description`, and `feature_names` in `app/controllers/manage/cars_controller.rb`, and wrap attach in a transaction so a failed upload keeps existing photos
+- [x] T045 [US4] Add `feature_names=` to `app/models/car.rb` that finds or creates `Feature` records by normalized name (data-model.md: Feature.name)
+- [x] T046 [US4] Add a rich-text description field and photo upload field to `app/views/manage/cars/_form.html.erb`, and a comma-separated feature tags field
+- [x] T047 [US4] Create `app/views/cars/_gallery.html.erb` that shows photo variants in attachment order (quickstart.md Scenario 3, step 1)
+- [x] T048 [US4] Render the gallery and the rich-text description in `app/views/cars/show.html.erb`
 
 **Checkpoint**: Listings have full media and descriptions.
 
@@ -156,16 +156,16 @@ Single Rails application at the repository root, following the default Rails lay
 
 ### Tests for User Story 5
 
-- [ ] T049 [P] [US5] Write a request test in `test/controllers/favorites_controller_test.rb` that `GET /favorites?ids=` returns the named cars and shows a sold car as unavailable (FR-014, edge case)
+- [x] T049 [P] [US5] Write a request test in `test/controllers/favorites_controller_test.rb` that `GET /favorites?ids=` returns the named cars and shows a sold car as unavailable (FR-014, edge case)
 - [ ] T050 [P] [US5] Write a system test in `test/system/favorites_test.rb` for save, reload persistence, and clearing storage (FR-015)
 
 ### Implementation for User Story 5
 
-- [ ] T051 [US5] Create `app/javascript/controllers/favorites_controller.js` as a Stimulus controller. It saves and removes car IDs in `localStorage` under one key with a try/catch around each read and write (data-model.md: Favorite)
-- [ ] T052 [US5] Add a "Save" button to `app/views/cars/show.html.erb` wired to the favorites controller
-- [ ] T053 [US5] Create `app/controllers/favorites_controller.rb` with `index` that reads `ids` from the query string, loads those cars including unavailable ones, and marks unavailable cars (FR-014)
-- [ ] T054 [US5] Add `get "favorites", to: "favorites#index"` to `config/routes.rb`
-- [ ] T055 [US5] Create `app/views/favorites/index.html.erb` that lists the cars and includes a Stimulus target that fills the list from `localStorage` when the page loads
+- [x] T051 [US5] Create `app/javascript/controllers/favorites_controller.js` as a Stimulus controller. It saves and removes car IDs in `localStorage` under one key with a try/catch around each read and write (data-model.md: Favorite)
+- [x] T052 [US5] Add a "Save" button to `app/views/cars/show.html.erb` wired to the favorites controller
+- [x] T053 [US5] Create `app/controllers/favorites_controller.rb` with `index` that reads `ids` from the query string, loads those cars including unavailable ones, and marks unavailable cars (FR-014)
+- [x] T054 [US5] Add `get "favorites", to: "favorites#index"` to `config/routes.rb`
+- [x] T055 [US5] Create `app/views/favorites/index.html.erb` that lists the cars and includes a Stimulus target that fills the list from `localStorage` when the page loads
 
 **Checkpoint**: Favorites work without an account.
 
@@ -179,15 +179,15 @@ Single Rails application at the repository root, following the default Rails lay
 
 ### Tests for User Story 6
 
-- [ ] T056 [P] [US6] Write model tests in `test/models/car_test.rb`: `price_dropped_at` is set when `asking_price_cents` decreases, and not when it increases (data-model.md: Car.price_dropped_at, Car.asking_price_cents)
+- [x] T056 [P] [US6] Write model tests in `test/models/car_test.rb`: `price_dropped_at` is set when `asking_price_cents` decreases, and not when it increases (data-model.md: Car.price_dropped_at, Car.asking_price_cents)
 - [ ] T057 [P] [US6] Write a system test in `test/system/price_badge_test.rb` for the badge appearing after a price reduction and disappearing on the next visit
 
 ### Implementation for User Story 6
 
-- [ ] T058 [US6] Add a `before_save` callback to `app/models/car.rb` that sets `price_dropped_at` to the current time when `asking_price_cents` decreases (data-model.md: Car.price_dropped_at)
-- [ ] T059 [US6] Add `data-favorites-price-dropped-at` attributes to the favorites list in `app/views/favorites/index.html.erb`
-- [ ] T060 [US6] Extend `app/javascript/controllers/favorites_controller.js` to compare each favorite's `last_seen_at` with `price_dropped_at`, show the badge when the drop is newer, and update `last_seen_at` after the page renders
-- [ ] T061 [US6] Confirm no mailer is called for price changes by adding a test in `test/models/car_test.rb` that a price drop enqueues no mail jobs (FR-016)
+- [x] T058 [US6] Add a `before_save` callback to `app/models/car.rb` that sets `price_dropped_at` to the current time when `asking_price_cents` decreases (data-model.md: Car.price_dropped_at)
+- [x] T059 [US6] Add `data-favorites-price-dropped-at` attributes to the favorites list in `app/views/favorites/index.html.erb`
+- [x] T060 [US6] Extend `app/javascript/controllers/favorites_controller.js` to compare each favorite's `last_seen_at` with `price_dropped_at`, show the badge when the drop is newer, and update `last_seen_at` after the page renders
+- [x] T061 [US6] Confirm no mailer is called for price changes by adding a test in `test/models/car_test.rb` that a price drop enqueues no mail jobs (FR-016)
 
 **Checkpoint**: Price drops appear as badges, with no email.
 
@@ -201,16 +201,16 @@ Single Rails application at the repository root, following the default Rails lay
 
 ### Tests for User Story 7
 
-- [ ] T062 [P] [US7] Write model tests in `test/models/car_test.rb` for the `stale` scope: a car 61 days old is included, and a car 59 days old is not (FR-017)
-- [ ] T063 [P] [US7] Write a job test in `test/jobs/stale_listing_report_job_test.rb` that the job sends one email per staff member listing the stale cars
+- [x] T062 [P] [US7] Write model tests in `test/models/car_test.rb` for the `stale` scope: a car 61 days old is included, and a car 59 days old is not (FR-017)
+- [x] T063 [P] [US7] Write a job test in `test/jobs/stale_listing_report_job_test.rb` that the job sends one email per staff member listing the stale cars
 
 ### Implementation for User Story 7
 
-- [ ] T064 [US7] Create `app/mailers/staff_mailer.rb` with a `stale_listings(user, cars)` method, sent to `user.email_address` (data-model.md: User.email_address)
-- [ ] T065 [US7] Create `app/views/staff_mailer/stale_listings.text.erb` that lists each car's make, model, VIN, and last-edited date
-- [ ] T066 [US7] Create `app/jobs/stale_listing_report_job.rb` that loads `Car.stale` and calls `StaffMailer.stale_listings(...).deliver_later` for each staff user
-- [ ] T067 [US7] Add a nightly entry for the job to `config/recurring.yml` for Solid Queue
-- [ ] T068 [US7] Update `updated_at` on the car when photos are attached or removed, in `app/controllers/manage/cars_controller.rb`, so the stale report counts media edits (FR-017; research.md #11)
+- [x] T064 [US7] Create `app/mailers/staff_mailer.rb` with a `stale_listings(user, cars)` method, sent to `user.email_address` (data-model.md: User.email_address)
+- [x] T065 [US7] Create `app/views/staff_mailer/stale_listings.text.erb` that lists each car's make, model, VIN, and last-edited date
+- [x] T066 [US7] Create `app/jobs/stale_listing_report_job.rb` that loads `Car.stale` and calls `StaffMailer.stale_listings(...).deliver_later` for each staff user
+- [x] T067 [US7] Add a nightly entry for the job to `config/recurring.yml` for Solid Queue
+- [x] T068 [US7] Update `updated_at` on the car when photos are attached or removed, in `app/controllers/manage/cars_controller.rb`, so the stale report counts media edits (FR-017; research.md #11)
 
 **Checkpoint**: The nightly report runs and counts every kind of edit.
 
@@ -224,16 +224,16 @@ Single Rails application at the repository root, following the default Rails lay
 
 ### Tests for User Story 8
 
-- [ ] T069 [P] [US8] Write a request test in `test/controllers/shares_controller_test.rb` that a valid link shows the car, and an expired link shows "link expired" without car details (FR-018)
-- [ ] T070 [P] [US8] Write a request test in `test/controllers/shares_controller_test.rb` that the share page does not show contact name, phone, or email (FR-019)
+- [x] T069 [P] [US8] Write a request test in `test/controllers/shares_controller_test.rb` that a valid link shows the car, and an expired link shows "link expired" without car details (FR-018)
+- [x] T070 [P] [US8] Write a request test in `test/controllers/shares_controller_test.rb` that the share page does not show contact name, phone, or email (FR-019)
 
 ### Implementation for User Story 8
 
-- [ ] T071 [US8] Add `generates_token_for :share, expires_in: 7.days` to `app/models/car.rb` (research.md #12)
-- [ ] T072 [US8] Create `app/controllers/manage/shares_controller.rb` with `create` that returns a share URL for one car (FR-018)
-- [ ] T073 [US8] Add `post "share", to: "shares#create"` under `resources :cars` in the manage namespace in `config/routes.rb`
-- [ ] T074 [US8] Create `app/controllers/shares_controller.rb` with `show` that resolves the token with `Car.find_by_token_for(:share, params[:token])` and renders "link expired" when it returns nil, and `allow_unauthenticated_access`
-- [ ] T075 [US8] Create `app/views/shares/show.html.erb` that shows photos, description, and features, without contact fields (FR-019)
+- [x] T071 [US8] Add `generates_token_for :share, expires_in: 7.days` to `app/models/car.rb` (research.md #12)
+- [x] T072 [US8] Create `app/controllers/manage/shares_controller.rb` with `create` that returns a share URL for one car (FR-018)
+- [x] T073 [US8] Add `post "share", to: "shares#create"` under `resources :cars` in the manage namespace in `config/routes.rb`
+- [x] T074 [US8] Create `app/controllers/shares_controller.rb` with `show` that resolves the token with `Car.find_by_token_for(:share, params[:token])` and renders "link expired" when it returns nil, and `allow_unauthenticated_access`
+- [x] T075 [US8] Create `app/views/shares/show.html.erb` that shows photos, description, and features, without contact fields (FR-019)
 
 **Checkpoint**: Share links work and never expose contact details.
 
@@ -243,11 +243,11 @@ Single Rails application at the repository root, following the default Rails lay
 
 **Purpose**: Performance, security, and end-to-end validation.
 
-- [ ] T076 [P] Add fragment caching with `cache car` in `app/views/cars/_car.html.erb` for car cards in the public results list (SC-004; research.md #13)
-- [ ] T077 [P] Write a request test in `test/controllers/contact_privacy_test.rb` that contact fields are absent from the public car page and the share page, and present on staff pages (FR-020)
-- [ ] T078 [P] Run `bin/rubocop` and fix reported issues across `app/` and `test/`
-- [ ] T079 [P] Run `bin/brakeman` and resolve any findings for this feature
-- [ ] T080 Run `bin/ci` and confirm all tests pass
+- [x] T076 [P] Add fragment caching with `cache car` in `app/views/cars/_car.html.erb` for car cards in the public results list (SC-004; research.md #13)
+- [x] T077 [P] Write a request test in `test/controllers/contact_privacy_test.rb` that contact fields are absent from the public car page and the share page, and present on staff pages (FR-020)
+- [x] T078 [P] Run `bin/rubocop` and fix reported issues across `app/` and `test/`
+- [x] T079 [P] Run `bin/brakeman` and resolve any findings for this feature
+- [x] T080 Run `bin/ci` and confirm all tests pass
 - [ ] T081 Walk through every scenario in `specs/001-car-inventory/quickstart.md` by hand and record any mismatch in `specs/001-car-inventory/quickstart.md` notes
 
 ---

@@ -26,11 +26,20 @@ class Manage::CarsController < ApplicationController
   end
 
   def update
-    if @car.update(car_params)
+    @car.assign_attributes(car_params)
+    # Compare against the version the form loaded, so a stale save is rejected (FR-021).
+    @car.lock_version = params.dig(:car, :lock_version) if params.dig(:car, :lock_version).present?
+
+    if @car.save
+      # Photo changes do not touch the record on their own, so touch it for the stale report (FR-017).
+      @car.touch if car_params[:photos].present?
       redirect_to manage_cars_path, notice: "Car updated."
     else
       render :edit, status: :unprocessable_entity
     end
+  rescue ActiveRecord::StaleObjectError
+    flash.now[:alert] = "This car was changed by someone else. Reload the page and try again."
+    render :edit, status: :unprocessable_entity
   end
 
   def destroy
@@ -44,7 +53,8 @@ class Manage::CarsController < ApplicationController
     end
 
     def car_params
-      params.expect(car: %i[dealership_id make model year vin mileage asking_price status
-                            contact_name contact_phone contact_email])
+      params.expect(car: [ :dealership_id, :make, :model, :year, :vin, :mileage, :asking_price, :status,
+                          :contact_name, :contact_phone, :contact_email, :description, :feature_names,
+                          { photos: [] } ])
     end
 end

@@ -1,4 +1,6 @@
 <%= form_with model: [:manage, car] do |f| %>
+  <%= f.hidden_field :lock_version %>
+
   <% if car.errors.any? %>
     <ul class="errors">
       <% car.errors.each do |error| %>
@@ -18,6 +20,21 @@
   <p><%= f.label :mileage %> <%= f.number_field :mileage, min: 0 %></p>
   <p><%= f.label :asking_price, "Asking price ($)" %> <%= f.number_field :asking_price, step: "0.01", min: 0.01, required: true %></p>
   <p><%= f.label :status %> <%= f.select :status, Car.statuses.keys.map { |s| [s.humanize, s] } %></p>
+
+  <p>
+    <%= f.label :feature_names, "Features (comma separated, e.g. AWD, leather seats)" %>
+    <%= f.text_field :feature_names %>
+  </p>
+
+  <p>
+    <%= f.label :description %>
+    <%= f.rich_text_area :description %>
+  </p>
+
+  <p>
+    <%= f.label :photos %>
+    <%= f.file_field :photos, multiple: true, accept: "image/jpeg,image/png,image/webp" %>
+  </p>
 
   <fieldset>
     <legend>Staff contact (private)</legend>

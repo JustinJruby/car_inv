@@ -1,0 +1,12 @@
+<% content_for :title, "#{@car.year} #{@car.make} #{@car.model}" %>
+
+<h1><%= @car.year %> <%= @car.make %> <%= @car.model %></h1>
+<%= render "cars/gallery", car: @car %>
+<p>Mileage: <%= number_with_delimiter(@car.mileage) %></p>
+<p>Asking price: <%= number_to_currency(@car.asking_price) %></p>
+<% if @car.features.any? %>
+  <p>Features: <%= @car.features.map { |feature| feature.name }.join(", ") %></p>
+<% end %>
+<% if @car.description.present? %>
+  <div class="description"><%= @car.description %></div>
+<% end %>

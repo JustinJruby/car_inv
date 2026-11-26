@@ -1,0 +1,7 @@
+<% if car.photos.attached? %>
+  <ul class="gallery">
+    <% car.photos.each do |photo| %>
+      <li><%= image_tag photo, alt: "#{car.year} #{car.make} #{car.model}", style: "max-width: 320px" %></li>
+    <% end %>
+  </ul>
+<% end %>

@@ -1,4 +1,5 @@
 <% content_for :title, "Manage cars" %>
+<%= turbo_stream_from "cars" %>
 
 <h1>Cars</h1>
 <p><%= link_to "Add a car", new_manage_car_path %></p>
