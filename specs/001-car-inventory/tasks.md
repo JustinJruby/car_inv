@@ -110,7 +110,7 @@ Single Rails application at the repository root, following the default Rails lay
 ### Tests for User Story 3
 
 - [x] T034 [P] [US3] Write a request test in `test/controllers/manage/cars_controller_test.rb` that a save with a stale `lock_version` is rejected with a reload message (FR-021; data-model.md: Car.lock_version)
-- [ ] T035 [P] [US3] Write a system test in `test/system/live_updates_test.rb` with two browser sessions: a status change on one appears on the other without reload (FR-010)
+- [x] T035 [P] [US3] Write a system test in `test/system/live_updates_test.rb` with two browser sessions: a status change on one appears on the other without reload (FR-010)
 
 ### Implementation for User Story 3
 
@@ -133,7 +133,7 @@ Single Rails application at the repository root, following the default Rails lay
 
 - [x] T040 [P] [US4] Write model tests in `test/models/car_test.rb` for photo content types (JPEG, PNG, WebP only) and photo size limits (data-model.md: Car.photos)
 - [x] T041 [P] [US4] Write a request test in `test/controllers/manage/cars_controller_test.rb` that a failed photo upload keeps previously attached photos (edge case in spec)
-- [ ] T042 [P] [US4] Write a system test in `test/system/car_media_test.rb` that a formatted description and a feature tag entered by staff appear on the customer page
+- [x] T042 [P] [US4] Write a system test in `test/system/car_media_test.rb` that a formatted description and a feature tag entered by staff appear on the customer page
 
 ### Implementation for User Story 4
 
@@ -157,7 +157,7 @@ Single Rails application at the repository root, following the default Rails lay
 ### Tests for User Story 5
 
 - [x] T049 [P] [US5] Write a request test in `test/controllers/favorites_controller_test.rb` that `GET /favorites?ids=` returns the named cars and shows a sold car as unavailable (FR-014, edge case)
-- [ ] T050 [P] [US5] Write a system test in `test/system/favorites_test.rb` for save, reload persistence, and clearing storage (FR-015)
+- [x] T050 [P] [US5] Write a system test in `test/system/favorites_test.rb` for save, reload persistence, and clearing storage (FR-015)
 
 ### Implementation for User Story 5
 
@@ -180,7 +180,7 @@ Single Rails application at the repository root, following the default Rails lay
 ### Tests for User Story 6
 
 - [x] T056 [P] [US6] Write model tests in `test/models/car_test.rb`: `price_dropped_at` is set when `asking_price_cents` decreases, and not when it increases (data-model.md: Car.price_dropped_at, Car.asking_price_cents)
-- [ ] T057 [P] [US6] Write a system test in `test/system/price_badge_test.rb` for the badge appearing after a price reduction and disappearing on the next visit
+- [x] T057 [P] [US6] Write a system test in `test/system/price_badge_test.rb` for the badge appearing after a price reduction and disappearing on the next visit
 
 ### Implementation for User Story 6
 

@@ -8,7 +8,7 @@
   <% else %>
     <ul>
       <% @favorites.each do |id, car| %>
-        <li data-car-id="<%= id %>" data-price-dropped-at="<%= car&.price_dropped_at&.iso8601 %>">
+        <li data-car-id="<%= id %>" data-price-dropped-at="<%= car&.price_dropped_at&.iso8601(3) %>">
           <% if car.nil? %>
             This car is no longer listed.
           <% elsif car.available? %>
