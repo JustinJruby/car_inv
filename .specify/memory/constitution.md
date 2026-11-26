@@ -30,7 +30,8 @@ Rationale: future contributors need the why, not only the what.
 ## Development Workflow
 
 - Work follows the Spec Kit sequence: specify, plan, tasks, implement.
-- Main branch changes MUST go through a pull request with at least one review.
+- Main branch changes MUST go through a pull request.
+- At least one independent review is REQUIRED. Where the repository has a single maintainer, that maintainer MAY merge their own pull request without an independent review, provided the pull request records that no independent review took place.
 - Commit messages SHOULD describe the why in the subject line.
 
 ## Quality Gates
@@ -46,4 +47,4 @@ Versioning follows semantic rules: MAJOR for removed or redefined principles, MI
 or materially expanded guidance, PATCH for clarifications and wording fixes.
 Compliance is checked during pull request review; reviewers MUST flag changes that violate a principle.
 
-**Version**: 1.0.1 | **Ratified**: 2026-11-25 | **Last Amended**: 2026-11-26
+**Version**: 1.1.0 | **Ratified**: 2026-11-25 | **Last Amended**: 2026-11-26
