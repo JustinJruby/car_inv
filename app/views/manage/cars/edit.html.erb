@@ -1,5 +1,16 @@
 <% content_for :title, "Edit car" %>
-<h1>Edit <%= @car.year %> <%= @car.make %> <%= @car.model %></h1>
+
+<div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight text-slate-900">Edit <%= @car.year %> <%= @car.make %> <%= @car.model %></h1>
+    <div class="mt-2 flex items-center gap-2 text-sm text-slate-500">
+      Status: <%= car_status_badge(@car) %>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <%= button_to "Create 7-day share link", manage_car_share_path(@car), class: "btn-secondary" %>
+    <%= link_to "Back to cars", manage_cars_path, class: "text-sm font-medium text-indigo-600 hover:text-indigo-800" %>
+  </div>
+</div>
+
 <%= render "form", car: @car %>
-<p><%= button_to "Create 7-day share link", manage_car_share_path(@car) %></p>
-<p><%= link_to "Back to cars", manage_cars_path %></p>

@@ -1,7 +1,10 @@
 <% if cars.empty? %>
-  <p>No cars match these filters.</p>
+  <div class="card px-6 py-16 text-center">
+    <p class="text-base font-medium text-slate-900">No cars match these filters.</p>
+    <p class="mt-1 text-sm text-slate-500">Try widening the price or year range.</p>
+  </div>
 <% else %>
-  <ul>
+  <ul class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
     <%= render partial: "cars/car", collection: cars, as: :car %>
   </ul>
 <% end %>
