@@ -11,7 +11,7 @@ class Manage::CarMediaTest < ActionDispatch::IntegrationTest
   end
 
   test "attaches a photo and shows it in the customer gallery" do
-    patch manage_car_path(@car), params: { car: { photos: [ photo ] } }
+    patch manage_car_path(@car), params: { car: { new_photos: [ photo ] } }
     assert_redirected_to manage_cars_path
     assert_equal 1, @car.reload.photos.count
 
@@ -19,11 +19,17 @@ class Manage::CarMediaTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "gallery"
   end
 
+  test "uploading more photos adds to the gallery instead of replacing it" do
+    patch manage_car_path(@car), params: { car: { new_photos: [ photo ] } }
+    patch manage_car_path(@car), params: { car: { new_photos: [ photo ] } }
+    assert_equal 2, @car.reload.photos.count
+  end
+
   test "rejects a non-image file and keeps existing photos" do
-    patch manage_car_path(@car), params: { car: { photos: [ photo ] } }
+    patch manage_car_path(@car), params: { car: { new_photos: [ photo ] } }
     assert_equal 1, @car.reload.photos.count
 
-    patch manage_car_path(@car), params: { car: { photos: [ photo("notes.txt", "text/plain") ] } }
+    patch manage_car_path(@car), params: { car: { new_photos: [ photo("notes.txt", "text/plain") ] } }
     assert_response :unprocessable_entity
     assert_equal 1, @car.reload.photos.count
   end
@@ -41,7 +47,7 @@ class Manage::CarMediaTest < ActionDispatch::IntegrationTest
 
   test "editing a photo touches the car so it counts as an edit" do
     travel_to 1.hour.from_now do
-      patch manage_car_path(@car), params: { car: { photos: [ photo ] } }
+      patch manage_car_path(@car), params: { car: { new_photos: [ photo ] } }
     end
     assert_in_delta Time.current, @car.reload.updated_at, 1.day
   end

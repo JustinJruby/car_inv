@@ -37,7 +37,16 @@ class Car < ApplicationRecord
   }, unless: :sold?
   validates :mileage, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :asking_price_cents, numericality: { only_integer: true, greater_than: 0 }
-  validate :photos_must_be_images
+  validate :new_photos_must_be_images
+  after_save :attach_new_photos
+
+  # Photos uploaded in a form. They are added to the gallery on save, so existing
+  # photos are kept (FR-007). Assigning to `photos` directly would replace them.
+  attr_reader :new_photos
+
+  def new_photos=(files)
+    @new_photos = Array(files).reject(&:blank?)
+  end
 
   # Staff enter the asking price in dollars; storage is integer cents.
   def asking_price
@@ -79,11 +88,19 @@ class Car < ApplicationRecord
   }
 
   private
-    def photos_must_be_images
-      photos.each do |photo|
-        errors.add(:photos, "must be JPEG, PNG, or WebP") unless PHOTO_CONTENT_TYPES.include?(photo.content_type)
-        errors.add(:photos, "must be 10 MB or smaller") if photo.byte_size > MAX_PHOTO_BYTES
+    def new_photos_must_be_images
+      Array(new_photos).each do |file|
+        errors.add(:photos, "must be JPEG, PNG, or WebP") unless PHOTO_CONTENT_TYPES.include?(file.content_type)
+        errors.add(:photos, "must be 10 MB or smaller") if file.size > MAX_PHOTO_BYTES
       end
+    end
+
+    def attach_new_photos
+      return if new_photos.blank?
+
+      files = new_photos
+      @new_photos = nil # cleared first: attach saves the record, which would run this callback again
+      photos.attach(files)
     end
 
     def apply_pending_feature_names

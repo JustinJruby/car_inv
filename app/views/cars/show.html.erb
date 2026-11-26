@@ -1,17 +1,54 @@
 <% content_for :title, "#{@car.year} #{@car.make} #{@car.model}" %>
 <%= turbo_stream_from @car %>
 
-<h1><%= @car.year %> <%= @car.make %> <%= @car.model %></h1>
-<%= render "gallery", car: @car %>
-<p>Mileage: <%= number_with_delimiter(@car.mileage) %></p>
-<p>Asking price: <%= number_to_currency(@car.asking_price) %></p>
-<% if @car.features.any? %>
-  <p>Features: <%= @car.features.map { |feature| feature.name }.join(", ") %></p>
-<% end %>
-<% if @car.description.present? %>
-  <div class="description"><%= @car.description %></div>
-<% end %>
-<div data-controller="favorites" data-favorites-car-id-value="<%= @car.id %>">
-  <button type="button" data-favorites-target="button" data-action="favorites#toggle">Save to favorites</button>
+<div class="mb-6">
+  <%= link_to "Back to search", cars_path, class: "text-sm font-medium text-indigo-600 hover:text-indigo-800" %>
 </div>
-<p><%= link_to "Back to search", cars_path %></p>
+
+<div class="grid gap-8 lg:grid-cols-3">
+  <div class="lg:col-span-2 space-y-6">
+    <%= render "gallery", car: @car %>
+
+    <% if @car.description.present? %>
+      <section class="card p-6">
+        <h2 class="section-title mb-3">Description</h2>
+        <div class="description text-sm leading-relaxed text-slate-700"><%= @car.description %></div>
+      </section>
+    <% end %>
+  </div>
+
+  <aside class="space-y-6">
+    <div class="card p-6">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-sm font-medium text-slate-500"><%= @car.year %></p>
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900"><%= @car.make %> <%= @car.model %></h1>
+        </div>
+        <%= car_status_badge(@car) %>
+      </div>
+
+      <p class="mt-5 text-3xl font-bold tracking-tight text-slate-900"><%= number_to_currency(@car.asking_price) %></p>
+
+      <dl class="mt-6 divide-y divide-slate-100 text-sm">
+        <div class="flex justify-between py-3">
+          <dt class="text-slate-500">Mileage</dt>
+          <dd class="font-medium text-slate-900"><%= number_with_delimiter(@car.mileage) %></dd>
+        </div>
+        <% if @car.features.any? %>
+          <div class="py-3">
+            <dt class="mb-2 text-slate-500">Features</dt>
+            <dd class="flex flex-wrap gap-1.5">
+              <% @car.features.each do |feature| %>
+                <span class="chip"><%= feature.name %></span>
+              <% end %>
+            </dd>
+          </div>
+        <% end %>
+      </dl>
+
+      <div class="mt-6" data-controller="favorites" data-favorites-car-id-value="<%= @car.id %>">
+        <button type="button" class="btn-primary w-full" data-favorites-target="button" data-action="favorites#toggle">Save to favorites</button>
+      </div>
+    </div>
+  </aside>
+</div>

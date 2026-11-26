@@ -1,22 +1,33 @@
 <% content_for :title, "Saved cars" %>
 
-<h1>Saved cars</h1>
+<div class="mb-8">
+  <h1 class="text-3xl font-bold tracking-tight text-slate-900">Saved cars</h1>
+  <p class="mt-1 text-sm text-slate-500">Cars you saved in this browser.</p>
+</div>
 
 <div data-controller="favorites-list">
   <% if @favorites.empty? %>
-    <p>You have no saved cars. Browse the <%= link_to "inventory", cars_path %> and save a car to find it here.</p>
+    <div class="card px-6 py-16 text-center">
+      <p class="text-base font-medium text-slate-900">You have no saved cars.</p>
+      <p class="mt-1 text-sm text-slate-500">Browse the <%= link_to "inventory", cars_path, class: "font-medium text-indigo-600 hover:text-indigo-800" %> and save a car to find it here.</p>
+    </div>
   <% else %>
-    <ul>
+    <ul class="grid gap-4">
       <% @favorites.each do |id, car| %>
-        <li data-car-id="<%= id %>" data-price-dropped-at="<%= car&.price_dropped_at&.iso8601 %>">
+        <li class="card flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between" data-car-id="<%= id %>" data-price-dropped-at="<%= car&.price_dropped_at&.iso8601(3) %>">
           <% if car.nil? %>
-            This car is no longer listed.
+            <span class="text-sm text-slate-500">This car is no longer listed.</span>
           <% elsif car.available? %>
-            <%= link_to "#{car.year} #{car.make} #{car.model}", car_path(car) %>
-            &mdash; <%= number_to_currency(car.asking_price) %>
-            <span data-favorites-list-target="badge" hidden>Price dropped</span>
+            <div class="min-w-0">
+              <%= link_to "#{car.year} #{car.make} #{car.model}", car_path(car), class: "font-semibold text-slate-900 hover:text-indigo-600" %>
+              <p class="text-sm text-slate-600"><%= number_to_currency(car.asking_price) %></p>
+            </div>
+            <span data-favorites-list-target="badge" hidden class="badge bg-amber-100 text-amber-800">Price dropped</span>
           <% else %>
-            <%= car.year %> <%= car.make %> <%= car.model %> &mdash; no longer available
+            <div class="min-w-0">
+              <p class="font-semibold text-slate-500"><%= car.year %> <%= car.make %> <%= car.model %></p>
+              <p class="text-sm text-slate-500">no longer available</p>
+            </div>
           <% end %>
         </li>
       <% end %>

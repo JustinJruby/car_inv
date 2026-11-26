@@ -1,0 +1,12 @@
+<% if flash[:notice] %>
+  <div role="status" class="mb-6 flex items-start gap-3 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800 ring-1 ring-inset ring-emerald-600/20">
+    <span aria-hidden="true" class="font-bold">✓</span>
+    <p><%= flash[:notice] %></p>
+  </div>
+<% end %>
+<% if flash[:alert] %>
+  <div role="alert" class="mb-6 flex items-start gap-3 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800 ring-1 ring-inset ring-red-600/20">
+    <span aria-hidden="true" class="font-bold">!</span>
+    <p><%= flash[:alert] %></p>
+  </div>
+<% end %>

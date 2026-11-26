@@ -1,8 +1,20 @@
-<h1>Forgot your password?</h1>
+<% content_for :title, "Forgot password" %>
 
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
+<div class="mx-auto max-w-md">
+  <div class="mb-8 text-center">
+    <h1 class="text-2xl font-bold tracking-tight text-slate-900">Forgot your password?</h1>
+    <p class="mt-1 text-sm text-slate-500">Enter your email and we'll send reset instructions.</p>
+  </div>
 
-<%= form_with url: passwords_path do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
-  <%= form.submit "Email reset instructions" %>
-<% end %>
+  <div class="card p-6 sm:p-8">
+    <%= render "shared/flash" %>
+
+    <%= form_with url: passwords_path, class: "space-y-5" do |form| %>
+      <div>
+        <%= form.label :email_address, "Email address", class: "label" %>
+        <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "you@dealership.com", value: params[:email_address], class: "input" %>
+      </div>
+      <%= form.submit "Email reset instructions", class: "btn-primary w-full" %>
+    <% end %>
+  </div>
+</div>

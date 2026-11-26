@@ -6,7 +6,8 @@ development:
   adapter: async
 
 test:
-  adapter: test
+  # async delivers broadcasts to browsers in system tests (the test adapter only records them)
+  adapter: async
 
 production:
   adapter: solid_cable

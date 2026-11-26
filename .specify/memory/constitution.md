@@ -3,7 +3,7 @@
 ## Core Principles
 
 ### I. Spec Before Code
-Every feature MUST start from a written specification in `.specify/` before implementation begins.
+Every feature MUST start from a written specification in `specs/<feature>/` before implementation begins.
 Each spec MUST state the problem, the expected behavior, and how success is checked.
 Rationale: a written spec makes scope and acceptance criteria reviewable before effort is spent.
 
@@ -46,4 +46,4 @@ Versioning follows semantic rules: MAJOR for removed or redefined principles, MI
 or materially expanded guidance, PATCH for clarifications and wording fixes.
 Compliance is checked during pull request review; reviewers MUST flag changes that violate a principle.
 
-**Version**: 1.0.0 | **Ratified**: 2026-11-25 | **Last Amended**: 2026-11-25
+**Version**: 1.0.1 | **Ratified**: 2026-11-25 | **Last Amended**: 2026-11-26
