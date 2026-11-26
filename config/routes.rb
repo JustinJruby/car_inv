@@ -23,6 +23,9 @@ Rails.application.routes.draw do
       resource :share, only: :create
     end
 
+    # Sales report (spec 004). Staff only.
+    resources :sales, only: :index
+
     # Cars in transit (spec 003). Staff only; every action requires sign-in.
     resources :transits, only: %i[index new create show] do
       member do

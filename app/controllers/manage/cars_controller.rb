@@ -14,6 +14,7 @@ class Manage::CarsController < ApplicationController
 
   def create
     @car = Car.new(car_params)
+    @car.changed_by = Current.user
 
     if @car.save
       redirect_to manage_cars_path, notice: "Car added."
@@ -27,6 +28,7 @@ class Manage::CarsController < ApplicationController
 
   def update
     @car.assign_attributes(car_params)
+    @car.changed_by = Current.user
     # Compare against the version the form loaded, so a stale save is rejected (FR-021).
     @car.lock_version = params.dig(:car, :lock_version) if params.dig(:car, :lock_version).present?
 
@@ -55,6 +57,6 @@ class Manage::CarsController < ApplicationController
     def car_params
       params.expect(car: [ :dealership_id, :make, :model, :year, :vin, :mileage, :asking_price, :status,
                           :contact_name, :contact_phone, :contact_email, :description, :feature_names,
-                          { new_photos: [] } ])
+                          :sale_price, :dealer_cost, { new_photos: [] } ])
     end
 end
