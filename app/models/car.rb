@@ -20,6 +20,8 @@ class Car < ApplicationRecord
   has_many :transits, dependent: :restrict_with_error
   has_one :open_transit, -> { open }, class_name: "Transit", inverse_of: :car
   has_many :car_price_events, dependent: :destroy
+  # A deleted car leaves the popularity ranking (spec 006, edge case), so its favorites go with it.
+  has_many :favorites, dependent: :destroy
 
   # The staff member making a change. Sale and dealer cost history rows are written for them (set by the controller).
   attr_accessor :changed_by

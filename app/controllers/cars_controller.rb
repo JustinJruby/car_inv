@@ -1,12 +1,18 @@
 class CarsController < ApplicationController
+  include Visitor
+
   allow_unauthenticated_access
 
   def index
     @cars = filtered_cars
   end
 
+  # @saved_favorite tells the save button its starting state. It only reads the visitor's
+  # cookie, so viewing a car never creates a visitor identifier.
   def show
     @car = Car.listed_for_customers.find(params[:id])
+    @saved_favorite = current_visitor_id.present? &&
+      Favorite.active.exists?(car: @car, visitor_id: current_visitor_id)
   end
 
   private

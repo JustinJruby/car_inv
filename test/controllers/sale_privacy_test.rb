@@ -28,7 +28,8 @@ class SalePrivacyTest < ActionDispatch::IntegrationTest
   end
 
   test "favorites never show dealer cost or sale history" do
-    get favorites_path, params: { ids: @car.id.to_s }
+    post car_favorite_path(@car)
+    get favorites_path
     assert_response :success
     assert_no_match "1,234.56", response.body
     assert_no_match "Dealer cost", response.body

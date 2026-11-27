@@ -53,8 +53,8 @@
         <% end %>
       </dl>
 
-      <div class="mt-6" data-controller="favorites" data-favorites-car-id-value="<%= @car.id %>">
-        <button type="button" class="btn-primary w-full" data-favorites-target="button" data-action="favorites#toggle">Save to favorites</button>
+      <div class="mt-6" data-controller="favorites" data-favorites-car-id-value="<%= @car.id %>" data-favorites-saved-value="<%= @saved_favorite ? 'true' : 'false' %>">
+        <button type="button" class="btn-primary w-full" data-favorites-target="button" data-action="favorites#toggle"><%= @saved_favorite ? "Remove from favorites" : "Save to favorites" %></button>
       </div>
     </div>
   </aside>

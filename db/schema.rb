@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_26_300003) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_26_400001) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -102,6 +102,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_26_300003) do
     t.index ["name"], name: "index_dealerships_on_name", unique: true
   end
 
+  create_table "favorites", force: :cascade do |t|
+    t.integer "car_id", null: false
+    t.string "visitor_id", limit: 36, null: false
+    t.datetime "saved_at", null: false
+    t.datetime "removed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["car_id", "visitor_id"], name: "index_favorites_on_car_and_visitor_active", unique: true, where: "removed_at IS NULL"
+    t.index ["car_id"], name: "index_favorites_on_car_id"
+  end
+
   create_table "features", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -160,6 +171,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_26_300003) do
   add_foreign_key "car_price_events", "cars"
   add_foreign_key "car_price_events", "users"
   add_foreign_key "cars", "dealerships"
+  add_foreign_key "favorites", "cars"
   add_foreign_key "sessions", "users"
   add_foreign_key "transit_events", "transits"
   add_foreign_key "transit_events", "users"

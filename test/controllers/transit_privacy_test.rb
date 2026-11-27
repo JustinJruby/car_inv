@@ -33,7 +33,8 @@ class TransitPrivacyTest < ActionDispatch::IntegrationTest
   end
 
   test "favorites never show origin, history, or staff contact" do
-    get favorites_path, params: { ids: @car.id.to_s }
+    post car_favorite_path(@car)
+    get favorites_path
     assert_response :success
     assert_no_private_details(response.body)
   end

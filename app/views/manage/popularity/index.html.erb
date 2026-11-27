@@ -1,0 +1,40 @@
+<% content_for :title, "Car popularity" %>
+
+<div class="mb-8">
+  <h1 class="text-2xl font-bold tracking-tight text-slate-900">Car popularity</h1>
+  <p class="mt-1 text-sm text-slate-500">Cars ranked by how many visitors have them saved as favorites. Staff only.</p>
+</div>
+
+<div class="mb-6 flex gap-2 text-sm font-medium">
+  <%= link_to "All time", manage_popularity_path(window: "all"), class: "rounded-lg px-3 py-2 #{@window == 'all' ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100'}" %>
+  <%= link_to "Last 30 days", manage_popularity_path(window: "30"), class: "rounded-lg px-3 py-2 #{@window == '30' ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100'}" %>
+</div>
+
+<% if @ranking.empty? %>
+  <div class="card px-6 py-16 text-center">
+    <p class="text-base font-medium text-slate-900">No favorites yet.</p>
+  </div>
+<% else %>
+  <div class="card overflow-x-auto">
+    <table class="min-w-full divide-y divide-slate-200 text-sm">
+      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <tr>
+          <th scope="col" class="px-6 py-3">Rank</th>
+          <th scope="col" class="px-6 py-3">Car</th>
+          <th scope="col" class="px-6 py-3">Status</th>
+          <th scope="col" class="px-6 py-3 text-right">Favorites</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        <% @ranking.each_with_index do |(car, count), index| %>
+          <tr>
+            <td class="whitespace-nowrap px-6 py-4 text-slate-700"><%= index + 1 %></td>
+            <td class="px-6 py-4 font-medium text-slate-900"><%= link_to "#{car.year} #{car.make} #{car.model}", manage_car_path(car), class: "text-indigo-600 hover:text-indigo-800" %></td>
+            <td class="px-6 py-4"><%= car_status_badge(car) %></td>
+            <td class="whitespace-nowrap px-6 py-4 text-right font-semibold text-slate-900"><%= count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
