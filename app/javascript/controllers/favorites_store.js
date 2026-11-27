@@ -1,8 +1,10 @@
-// Favorites live only in this browser (FR-014, FR-015). Every storage call is wrapped
-// so a blocked or full localStorage degrades to "no favorites" instead of an error.
-const KEY = "car-inventory.favorites"
+// Browser storage keeps one thing: when each saved car was last seen on the favorites page
+// (spec 001, US6). It drives the "Price dropped" badge. Favorites themselves live on the server
+// (spec 006, research R3). Every storage call is wrapped, so blocked or full storage degrades
+// to no badge instead of an error.
+const KEY = "car-inventory.last-seen"
 
-export function readFavorites() {
+function readSeen() {
   try {
     return JSON.parse(window.localStorage.getItem(KEY)) || {}
   } catch (_error) {
@@ -10,36 +12,23 @@ export function readFavorites() {
   }
 }
 
-function writeFavorites(favorites) {
+function writeSeen(seen) {
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(favorites))
+    window.localStorage.setItem(KEY, JSON.stringify(seen))
   } catch (_error) {
-    // Storage unavailable: the favorite simply isn't remembered.
+    // Storage unavailable: the badge baseline simply isn't remembered.
   }
 }
 
-export function isFavorite(carId) {
-  return Object.prototype.hasOwnProperty.call(readFavorites(), String(carId))
-}
-
-export function saveFavorite(carId) {
-  const favorites = readFavorites()
-  const now = new Date().toISOString()
-  favorites[String(carId)] = favorites[String(carId)] || { saved_at: now, last_seen_at: now }
-  writeFavorites(favorites)
-}
-
-export function removeFavorite(carId) {
-  const favorites = readFavorites()
-  delete favorites[String(carId)]
-  writeFavorites(favorites)
+export function lastSeenFor(carId) {
+  return readSeen()[String(carId)] || null
 }
 
 export function markSeen(carIds) {
-  const favorites = readFavorites()
+  const seen = readSeen()
   const now = new Date().toISOString()
   carIds.forEach((carId) => {
-    if (favorites[String(carId)]) favorites[String(carId)].last_seen_at = now
+    seen[String(carId)] = now
   })
-  writeFavorites(favorites)
+  writeSeen(seen)
 }

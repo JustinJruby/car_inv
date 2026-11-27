@@ -1,32 +1,21 @@
 import { Controller } from "@hotwired/stimulus"
-import { readFavorites, markSeen } from "controllers/favorites_store"
+import { lastSeenFor, markSeen } from "controllers/favorites_store"
 
-// Favorites page. With no ids in the URL, load the saved ids from this browser and
-// reload with them. With ids, show a "Price dropped" badge for any saved car whose
-// price was reduced after the customer last opened favorites (FR-016).
+// Favorites page. The saved cars come from the server. A "Price dropped" badge shows for each car
+// whose price was reduced after the customer last looked at favorites (FR-016). The baseline is
+// when the car was last seen on this device, or when it was saved (spec 006, T013).
 export default class extends Controller {
-  static targets = ["badge"]
-
   connect() {
-    const params = new URLSearchParams(window.location.search)
-    if (!params.has("ids")) {
-      const ids = Object.keys(readFavorites())
-      if (ids.length > 0) window.location.replace(`/favorites?ids=${ids.join(",")}`)
-      return
-    }
-
-    const favorites = readFavorites()
-    const seenIds = []
-    this.badgeTargets.forEach((badge) => {
-      const row = badge.closest("[data-car-id]")
+    const rows = this.element.querySelectorAll("[data-car-id]")
+    rows.forEach((row) => {
       const carId = row.dataset.carId
-      const favorite = favorites[carId]
       const droppedAt = row.dataset.priceDroppedAt
-      if (favorite && droppedAt && new Date(droppedAt) > new Date(favorite.last_seen_at)) {
+      const baseline = lastSeenFor(carId) || row.dataset.savedAt
+      const badge = row.querySelector('[data-favorites-list-target="badge"]')
+      if (badge && droppedAt && new Date(droppedAt) > new Date(baseline)) {
         badge.hidden = false
       }
-      seenIds.push(carId)
     })
-    markSeen(seenIds)
+    markSeen(Array.from(rows, (row) => row.dataset.carId))
   }
 }

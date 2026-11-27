@@ -102,7 +102,8 @@ class CarsControllerTest < ActionDispatch::IntegrationTest
 
   test "a saved pre-sell car is not shown as no longer available" do
     car = in_transit_car(model: "Aurora", pre_sell: true, price: 2_100_000)
-    get favorites_path, params: { ids: car.id.to_s }
+    post car_favorite_path(car)
+    get favorites_path
     assert_response :success
     assert_includes response.body, "Aurora"
     refute_includes response.body, "no longer available"

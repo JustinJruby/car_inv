@@ -13,7 +13,9 @@ Rails.application.routes.draw do
 
   # Public inventory (customers) and staff car management
   root "cars#index"
-  resources :cars, only: %i[index show]
+  resources :cars, only: %i[index show] do
+    resource :favorite, only: %i[create destroy]
+  end
   get "favorites", to: "favorites#index"
 
   get "share/:token", to: "shares#show", as: :share
@@ -25,6 +27,9 @@ Rails.application.routes.draw do
 
     # Sales report (spec 004). Staff only.
     resources :sales, only: :index
+
+    # Favorite popularity ranking (spec 006). Staff only.
+    get "popularity", to: "popularity#index"
 
     # Cars in transit (spec 003). Staff only; every action requires sign-in.
     resources :transits, only: %i[index new create show] do
